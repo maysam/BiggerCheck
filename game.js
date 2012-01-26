@@ -1,8 +1,8 @@
 (function() {
 	var spr=PP.spr,rm=PP.rm,obj=PP.obj,snd=PP.snd,al=PP.al,global=PP.global,Alarm=PP.Alarm,collision=PP.collision,draw=PP.draw,init=PP.init,key=PP.key,load=PP.load,loop=PP.loop,mouse=PP.mouse,physics=PP.physics,Sound=PP.Sound,SoundEffect=PP.SoundEffect,Sprite=PP.Sprite,view=PP.view,walkDown=PP.walkDown;
 	
-	init('game',640,480);
-	loop.rate = 30;
+	init('game',1024,580);
+	loop.rate = 20;
 
 	// The balloon object is created to better organize the sprites
 	spr.balloon = {};
