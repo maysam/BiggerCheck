@@ -34,7 +34,7 @@
 					 
 					// This y coordinate will start the balloon below the view of the game view.
 					t.y = 523;
-					
+					t.value = Math.floor(Math.random()*19)+1;
 					t.angle = 0;
 				},
 				 
@@ -46,6 +46,11 @@
 					// pressed down since the end of the last loop
 					// The collision.point function determines if a point lies within a mask.
 					if (mouse.left.down && collision.point(t,mouse.x,mouse.y,false)) {
+						for(var i in loop.regObjects) 
+						{ 
+							if(t.value<loop.regObjects[i].value)
+								return;
+						}
 						global.score += t.vspeed;
 						loop.remove(t);
 					}
@@ -60,21 +65,23 @@
 					// The actual sprite of the balloon is drawn here.
 					// All sprite objects have a draw method that is used to draw a sprite.
 					t.sprite.draw(t.x,t.y);
+					
+					draw.text(t.x-10,t.y,t.value);
 				}
 			},
 		 
 			red: {
-				vspeed: 15,
+				vspeed: 1,
 				sprite: spr.balloon.red
 			},
 		 
 			blue: {
-				vspeed: 10,
+				vspeed: 3/2,
 				sprite: spr.balloon.blue
 			},
 		 
 			green: {
-				vspeed: 5,
+				vspeed: 2,
 				sprite: spr.balloon.green
 			}
 		};
@@ -87,7 +94,7 @@
 		obj.background = {
 			depth: -1,
 			draw: function(t) {
-				spr.background.draw(0,0);
+				spr.background.draw(0,0);	
 			}
 		};
 		
@@ -166,7 +173,7 @@
 				loop.beget(Math.choose(bal.red,bal.blue,bal.green));
 				
 				// The alarm resets itself for half a second. Balloons will spawn half a second apart.
-				this.time = loop.rate*.5;
+				this.time = loop.rate*2;
 			});
 			
 			// Set the initial alarm time to 0 so it will trigger right away.
