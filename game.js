@@ -180,9 +180,12 @@
 			});
 			var bal = obj.balloon;
 				
-				loop.beget(bal.red);
-				loop.beget(bal.blue);
-				loop.beget(bal.green);
+			var new_baloon = loop.beget(bal.red);
+			new_baloon.y -= Math.random()*500;
+			var new_baloon = loop.beget(bal.blue);
+			new_baloon.y -= Math.random()*500;
+			var new_baloon = loop.beget(bal.green);
+			new_baloon.y -= Math.random()*500;
 			// Set the initial alarm time to 0 so it will trigger right away.
 			balloonCreator.time = 0;
 		};
