@@ -8,10 +8,10 @@
 	spr.balloon = {};
 	 
 	// The new Sprite function will return a new sprite object.
-	spr.balloon.red = new Sprite('sprites/balloon_red.png',1,32,43);
-	spr.balloon.blue = new Sprite('sprites/balloon_blue.png',1,32,43);
-	spr.balloon.green = new Sprite('sprites/balloon_green.png',1,32,43);
-	spr.background = new Sprite('sprites/background.png',1,0,0);
+	spr.balloon.red = new Sprite('sprites/balloon_red.png',1,0,0);
+	spr.balloon.blue = new Sprite('sprites/balloon_blue.png',1,0,0);
+	spr.balloon.green = new Sprite('sprites/balloon_green.png',1,0,0);
+	spr.background = new Sprite('sprites/sky_'+Math.ceil(Math.random()*5)+'.jpg',1,0,0);
 
 	// This function will be invoked when all of the resources have finished downloading
 	load(function() {
@@ -30,7 +30,7 @@
 					// The x coordinates increase to the left and the y coordinates increase downwards.
 					 
 					// The balloon will be randomly assigned a position
-					t.x = Math.floor(Math.random()*640);
+					t.x = Math.floor(Math.random()*16)*64+64;
 					 
 					// This y coordinate will start the balloon below the view of the game view.
 					t.y = 523;
@@ -66,7 +66,10 @@
 					// All sprite objects have a draw method that is used to draw a sprite.
 					t.sprite.draw(t.x,t.y);
 					
-					draw.text(t.x-10,t.y,t.value);
+					draw.textHalign = 'center';
+					draw.color = 'white';
+					draw.font = 'normal normal normal 40px Georgia';
+					draw.text(t.x+30,t.y+60,t.value);
 				}
 			},
 		 
@@ -170,12 +173,16 @@
 				
 				// The choose function will randomly choose one of the passed parameters and return it.
 				// The loop.beget function is a combination of the Object.create and loop.register functions
-				loop.beget(Math.choose(bal.red,bal.blue,bal.green));
+				var new_baloon = loop.beget(Math.choose(bal.red,bal.blue,bal.green));
 				
 				// The alarm resets itself for half a second. Balloons will spawn half a second apart.
-				this.time = loop.rate*2;
+				this.time = loop.rate;
 			});
-			
+			var bal = obj.balloon;
+				
+				loop.beget(bal.red);
+				loop.beget(bal.blue);
+				loop.beget(bal.green);
 			// Set the initial alarm time to 0 so it will trigger right away.
 			balloonCreator.time = 0;
 		};
