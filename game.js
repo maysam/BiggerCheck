@@ -41,7 +41,30 @@
 				tick: function(t) {
 					// This controls the upward movement of the balloon
 					t.y -= t.vspeed;
-					 
+					for(var i in loop.regObjects) 
+					{ 
+						g = loop.regObjects[i];
+						if( t === g )
+						{
+							break;
+						}
+						if(g.mask)
+						if(t.y>g.y)
+						{
+							o1 = t;
+							o2 = g;
+							res = PP.collision.resolveShape(o1.mask,o1.x,o1.y,o1.angle || 0);
+							res1 = PP.collision.resolveShape(o2.mask,o2.x,o2.y,o2.angle);
+							col = PP.collision.sat(res,res1,o1,o2,true,0.5,false);
+							if(col)
+							console.log(col);
+						}
+						else
+						{
+							//console.log(g);
+						}
+					}
+		 
 					// mouse.left.down holds a value of true if the left mouse button has been
 					// pressed down since the end of the last loop
 					// The collision.point function determines if a point lies within a mask.
@@ -176,7 +199,7 @@
 				var new_baloon = loop.beget(Math.choose(bal.red,bal.blue,bal.green));
 				
 				// The alarm resets itself for half a second. Balloons will spawn half a second apart.
-				this.time = loop.rate;
+				this.time = loop.rate*.5;
 			});
 			var bal = obj.balloon;
 				
