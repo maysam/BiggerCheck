@@ -30,7 +30,7 @@
 					// The x coordinates increase to the left and the y coordinates increase downwards.
 					 
 					// The balloon will be randomly assigned a position
-					t.x = Math.floor(Math.random()*16)*64+64;
+					t.x = Math.floor(Math.random()*15)*64;
 					 
 					// This y coordinate will start the balloon below the view of the game view.
 					t.y = 523;
@@ -53,11 +53,10 @@
 						{
 							o1 = t;
 							o2 = g;
-							res = PP.collision.resolveShape(o1.mask,o1.x,o1.y,o1.angle || 0);
+							res = PP.collision.resolveShape(o1.mask,o1.x,o1.y,o1.angle);
 							res1 = PP.collision.resolveShape(o2.mask,o2.x,o2.y,o2.angle);
 							col = PP.collision.sat(res,res1,o1,o2,true,0.5,false);
-							if(col)
-							console.log(col);
+							//if(col) console.log(col);
 						}
 						else
 						{
@@ -71,15 +70,21 @@
 					if (mouse.left.down && collision.point(t,mouse.x,mouse.y,false)) {
 						for(var i in loop.regObjects) 
 						{ 
-							if(t.value<loop.regObjects[i].value)
+							g = loop.regObjects[i];
+							if(t.value<g.value)
+							{
+								console.log('choose ' + g.value);
 								return;
+							}
 						}
-						global.score += t.vspeed;
+						global.total_active --;
+						global.score += global.total_active;
 						loop.remove(t);
 					}
 					 
 					// If the balloon moves so far up that it is outside of the view, remove it
 					if (t.y < -40) {
+						global.total_active --;
 						loop.remove(t);
 					}
 				},
@@ -183,23 +188,64 @@
 			}
 		};
 		
+
+		obj.total_active = {
+			initialize: function(t) {
+				
+			},
+			
+			draw: function(t) {
+				// The textHalign property sets the horizontal alignment of the draw.text function
+				draw.textHalign = 'left';
+				// The textValign property sets the vertical alignment of the draw.text function
+				draw.textValign = 'bottom';
+				// Change the drawing color (used for things like primitive shapes and text) to white, so the score text
+				// will be visible against a brown background
+				draw.color = 'white';
+				// The draw.font property takes a css font string, to be used by the draw.text function
+				draw.font = 'normal normal normal 20px Georgia';
+				// Here, the score is drawn in the bottom left at position (0,480)
+				max = 0;
+				m = '';
+						for(var i in loop.regObjects) 
+						{ 
+							g = loop.regObjects[i];
+							if(g != undefined)
+							if(max<g.value)
+							{
+								m = m + ',' + max;
+								max = g.value;
+								
+							}
+						}
+
+				draw.text(0,380,'total active: '+global.total_active + ' max is ' + max + ' L= ' + m);
+			}
+		};
+		
 		rm.play = function() {
 			// Register the background and score objects
 			loop.register(obj.background,0,0);
 			loop.register(obj.score,0,0);
-			
+			loop.register(obj.total_active,0,0);
+
 			global.score = 0;
-			
+			global.total_active = 0;
 			// The balloonCreator alarm controls the timing of the creations of the balloons
 			var balloonCreator = new Alarm(function() {
 				var bal = obj.balloon;
-				
 				// The choose function will randomly choose one of the passed parameters and return it.
 				// The loop.beget function is a combination of the Object.create and loop.register functions
-				var new_baloon = loop.beget(Math.choose(bal.red,bal.blue,bal.green));
-				
+				if(global.total_active<10)
+				{
+					var new_baloon = loop.beget(Math.choose(bal.red,bal.blue,bal.green));
+					global.total_active ++;
+				}
 				// The alarm resets itself for half a second. Balloons will spawn half a second apart.
-				this.time = loop.rate*.5;
+				if(global.total_active<3)
+					this.time = 0;
+				else
+					this.time = loop.rate*2;
 			});
 			var bal = obj.balloon;
 				
@@ -209,6 +255,8 @@
 			new_baloon.y -= Math.random()*500;
 			var new_baloon = loop.beget(bal.green);
 			new_baloon.y -= Math.random()*500;
+			
+			global.total_active = 3;
 			// Set the initial alarm time to 0 so it will trigger right away.
 			balloonCreator.time = 0;
 		};
