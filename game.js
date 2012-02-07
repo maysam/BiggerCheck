@@ -145,10 +145,10 @@
 				draw.textValign = 'middle';
 				draw.color = 'white';
 				draw.font = 'normal normal normal 50px Georgia';
-				draw.text(320,240,'Score: '+global.score);
+				draw.text(512,240,'Score: '+global.score);
 				draw.font = 'normal normal normal 20px Georgia';
 				draw.textValign = 'alphabetic';
-				draw.text(320,15,'Press enter to start a new game');
+				draw.text(512,32,'Press enter to start a new game');
 			}
 		};
 
@@ -176,7 +176,7 @@
 				// The draw.font property takes a css font string, to be used by the draw.text function
 				draw.font = 'normal normal normal 20px Georgia';
 				// Here, the score is drawn in the bottom left at position (0,480)
-				draw.text(0,480,'Score: '+global.score);
+				draw.text(10,575,'Score: '+global.score);
 				
 				// If there are 5 seconds left, switch to red
 				if (t.countdown.time <= loop.rate*5) {
@@ -184,50 +184,15 @@
 				}
 				
 				// Draw the current time remaining.
-				draw.text(0,450,Math.ceil(t.countdown.time/loop.rate)+' Seconds Left');
+				draw.text(10,550,Math.ceil(t.countdown.time/loop.rate)+' Seconds Left');
 			}
 		};
 		
 
-		obj.total_active = {
-			initialize: function(t) {
-				
-			},
-			
-			draw: function(t) {
-				// The textHalign property sets the horizontal alignment of the draw.text function
-				draw.textHalign = 'left';
-				// The textValign property sets the vertical alignment of the draw.text function
-				draw.textValign = 'bottom';
-				// Change the drawing color (used for things like primitive shapes and text) to white, so the score text
-				// will be visible against a brown background
-				draw.color = 'white';
-				// The draw.font property takes a css font string, to be used by the draw.text function
-				draw.font = 'normal normal normal 20px Georgia';
-				// Here, the score is drawn in the bottom left at position (0,480)
-				max = 0;
-				m = '';
-						for(var i in loop.regObjects) 
-						{ 
-							g = loop.regObjects[i];
-							if(g != undefined)
-							if(max<g.value)
-							{
-								m = m + ',' + max;
-								max = g.value;
-								
-							}
-						}
-
-				draw.text(0,380,'total active: '+global.total_active + ' max is ' + max + ' L= ' + m);
-			}
-		};
-		
 		rm.play = function() {
 			// Register the background and score objects
 			loop.register(obj.background,0,0);
 			loop.register(obj.score,0,0);
-			loop.register(obj.total_active,0,0);
 
 			global.score = 0;
 			global.total_active = 0;
