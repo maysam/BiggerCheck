@@ -2,8 +2,11 @@
 	var spr=PP.spr,rm=PP.rm,obj=PP.obj,snd=PP.snd,al=PP.al,global=PP.global,Alarm=PP.Alarm,collision=PP.collision,draw=PP.draw,init=PP.init,key=PP.key,load=PP.load,loop=PP.loop,mouse=PP.mouse,physics=PP.physics,Sound=PP.Sound,SoundEffect=PP.SoundEffect,Sprite=PP.Sprite,view=PP.view,walkDown=PP.walkDown;
 	
 	init('game',1024,580);
-	loop.rate = 20;
-
+	loop.rate = 30;	//	speed
+	birth_rate = 2;	//	birth rate
+	number_from = 1;	//	range begin
+	number_to = 19;	//	range end
+	
 	// The balloon object is created to better organize the sprites
 	spr.balloon = {};
 	 
@@ -35,6 +38,7 @@
 					// This y coordinate will start the balloon below the view of the game view.
 					t.y = 523;
 					t.value = Math.floor(Math.random()*19)+1;
+					t.value = number_from + Math.floor(Math.random()*(number_to-number_from+1));
 					t.angle = 0;
 				},
 				 
@@ -134,7 +138,8 @@
 		obj.gameOver = {
 			tick: function(t) {
 				// If the enter key has been released, switch back to the play room
-				if (key.enter.up) {
+				
+				if (key.enter.up || mouse.left.up) {
 					loop.room = rm.play;
 				}
 			},
@@ -210,7 +215,7 @@
 				if(global.total_active<3)
 					this.time = 0;
 				else
-					this.time = loop.rate*2;
+					this.time = loop.rate*birth_rate;
 			});
 			var bal = obj.balloon;
 				
