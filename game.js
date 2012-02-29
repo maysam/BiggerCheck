@@ -1,11 +1,14 @@
 (function() {
 	var spr=PP.spr,rm=PP.rm,obj=PP.obj,snd=PP.snd,al=PP.al,global=PP.global,Alarm=PP.Alarm,collision=PP.collision,draw=PP.draw,init=PP.init,key=PP.key,load=PP.load,loop=PP.loop,mouse=PP.mouse,physics=PP.physics,Sound=PP.Sound,SoundEffect=PP.SoundEffect,Sprite=PP.Sprite,view=PP.view,walkDown=PP.walkDown;
 	
-	init('game',1024,580);
+	init('game',800,480);
 	loop.rate = 30;	//	speed
-	birth_rate = 2;	//	birth rate
-	number_from = 1;	//	range begin
+	birth_rate = 4;	//	birth rate
+	number_from = 2;	//	range begin
 	number_to = 19;	//	range end
+	minimum_balloons = 5;
+	maximum_balloons = 10;
+	toggle = true;
 	
 	// The balloon object is created to better organize the sprites
 	spr.balloon = {};
@@ -15,7 +18,11 @@
 	spr.balloon.blue = new Sprite('sprites/balloon_blue.png',1,0,0);
 	spr.balloon.green = new Sprite('sprites/balloon_green.png',1,0,0);
 	spr.background = new Sprite('sprites/sky_'+Math.ceil(Math.random()*5)+'.jpg',1,0,0);
-
+	//	sounds
+	spr.pop = new Sound('snd/pop.ogg');
+	spr.pop2 = new Sound('snd/pop2.ogg');
+	spr.giggle = new Sound('snd/giggle.ogg');
+	
 	// This function will be invoked when all of the resources have finished downloading
 	load(function() {
 		obj.balloon = {
@@ -33,10 +40,10 @@
 					// The x coordinates increase to the left and the y coordinates increase downwards.
 					 
 					// The balloon will be randomly assigned a position
-					t.x = Math.floor(Math.random()*15)*64;
+					t.x = Math.floor(Math.random()*12)*64+32;
 					 
 					// This y coordinate will start the balloon below the view of the game view.
-					t.y = 523;
+					t.y = 423;
 					t.value = Math.floor(Math.random()*19)+1;
 					t.value = number_from + Math.floor(Math.random()*(number_to-number_from+1));
 					t.angle = 0;
@@ -60,11 +67,6 @@
 							res = PP.collision.resolveShape(o1.mask,o1.x,o1.y,o1.angle);
 							res1 = PP.collision.resolveShape(o2.mask,o2.x,o2.y,o2.angle);
 							col = PP.collision.sat(res,res1,o1,o2,true,0.5,false);
-							//if(col) console.log(col);
-						}
-						else
-						{
-							//console.log(g);
 						}
 					}
 		 
@@ -77,10 +79,16 @@
 							g = loop.regObjects[i];
 							if(t.value<g.value)
 							{
+								spr.giggle.play();
 								console.log('choose ' + g.value);
 								return;
 							}
 						}
+						if(toggle)
+							spr.pop.play();
+						else
+							spr.pop2.play();
+						toggle = !toggle;	
 						global.total_active --;
 						global.score += global.total_active;
 						loop.remove(t);
@@ -148,12 +156,14 @@
 			draw: function(t) {
 				draw.textHalign = 'center';
 				draw.textValign = 'middle';
-				draw.color = 'white';
-				draw.font = 'normal normal normal 50px Georgia';
-				draw.text(512,240,'Score: '+global.score);
-				draw.font = 'normal normal normal 20px Georgia';
-				draw.textValign = 'alphabetic';
-				draw.text(512,32,'Press enter to start a new game');
+                draw.color = 'white';
+                if(global.score != undefined)
+                {
+				    draw.font = 'normal normal normal 60px Georgia';
+				    draw.text(400,340,'Score: '+global.score);
+				}
+                draw.font = 'normal normal normal 40px Georgia';
+				draw.text(400,240,'Click here to start a new game');
 			}
 		};
 
@@ -181,7 +191,7 @@
 				// The draw.font property takes a css font string, to be used by the draw.text function
 				draw.font = 'normal normal normal 20px Georgia';
 				// Here, the score is drawn in the bottom left at position (0,480)
-				draw.text(10,575,'Score: '+global.score);
+				draw.text(10,475,'Score: '+global.score);
 				
 				// If there are 5 seconds left, switch to red
 				if (t.countdown.time <= loop.rate*5) {
@@ -189,7 +199,7 @@
 				}
 				
 				// Draw the current time remaining.
-				draw.text(10,550,Math.ceil(t.countdown.time/loop.rate)+' Seconds Left');
+				draw.text(10,450,Math.ceil(t.countdown.time/loop.rate)+' Seconds Left');
 			}
 		};
 		
@@ -206,13 +216,13 @@
 				var bal = obj.balloon;
 				// The choose function will randomly choose one of the passed parameters and return it.
 				// The loop.beget function is a combination of the Object.create and loop.register functions
-				if(global.total_active<10)
+				if(global.total_active<maximum_balloons)
 				{
 					var new_baloon = loop.beget(Math.choose(bal.red,bal.blue,bal.green));
 					global.total_active ++;
 				}
 				// The alarm resets itself for half a second. Balloons will spawn half a second apart.
-				if(global.total_active<3)
+				if(global.total_active<minimum_balloons)
 					this.time = 0;
 				else
 					this.time = loop.rate*birth_rate;
@@ -220,11 +230,11 @@
 			var bal = obj.balloon;
 				
 			var new_baloon = loop.beget(bal.red);
-			new_baloon.y -= Math.random()*500;
+			new_baloon.y -= Math.random()*400;
 			var new_baloon = loop.beget(bal.blue);
-			new_baloon.y -= Math.random()*500;
+			new_baloon.y -= Math.random()*400;
 			var new_baloon = loop.beget(bal.green);
-			new_baloon.y -= Math.random()*500;
+			new_baloon.y -= Math.random()*400;
 			
 			global.total_active = 3;
 			// Set the initial alarm time to 0 so it will trigger right away.
@@ -237,6 +247,6 @@
 		};
 		
 		loop.active = true;
-		loop.room = rm.play;
+		loop.room = rm.gameOver;
 	});
 }());
