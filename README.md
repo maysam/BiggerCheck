@@ -7,15 +7,8 @@ BiggerCheck is a children game, reward is given when the baloon with the biggest
 This is using Propulsion engine which is a JavaScript game development framework for the HTML5 canvas element.
 
 
-sudo ln ./* /var/www/BiggerCheck/sprites/
-
-"!http://api.coderwall.com/maysam/endorsecount.png!":http://coderwall/maysam 
 
 
 
-or
 
 
-<a href='http://coderwall.com/maysam'>
-    <img src='http://api.coderwall.com/maysam/endorsecount.png' />
-</a> 
