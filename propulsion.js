@@ -779,14 +779,20 @@ var PP = {
 		var offsetLeft = loffset(canvas);
 		var offsetTop = toffset(canvas);
 		
-		window.onmousemove = function(e) {
+		window.onmousemove = function onMove(e) {
+				
 			var posx = 0;
 			var posy = 0;
 			if (!e) {
 				e = window.event;
 			}
 			
-			if (e.pageX || e.pageY) {
+			if(e.originalEvent) {
+				e.preventDefault(); 	//	disable default touch moves, eg zoom and scroll
+				var orig = e.originalEvent; 
+				posx = orig.changedTouches[0].pageX; 
+				posy = orig.changedTouches[0].pageY;
+			} else if (e.pageX || e.pageY) {
 				posx = e.pageX;
 				posy = e.pageY;
 			} else if (e.clientX || e.clientY) {
@@ -801,7 +807,7 @@ var PP = {
 			PP.mouse.y = (posy/displayHeight)*PP.view.height+PP.view.y;
 		};
 		
-		window.onmousedown = function(e) {
+		window.onmousedown = function onDown(e) {
 			var button;
 			
 			switch(e.button) {
@@ -822,7 +828,7 @@ var PP = {
 			button.pressed = true;
 		};
 		
-		window.onmouseup = function(e) {
+		window.onmouseup = function onUp(e) {
 			var button;
 			
 			switch(e.button) {
@@ -842,6 +848,13 @@ var PP = {
 			button.up = true;
 			button.pressed = false;
 		};
+	
+		var touchable = 'createTouch' in document;
+		if(touchable) {
+			canvas.addEventListener( 'touchstart', onMove, false );
+			canvas.addEventListener( 'touchmove', onMove, false );
+			canvas.addEventListener( 'touchend', onMove, false );
+		}	
 		
 		// Event handler for mouse wheel event.
 		var wheel = function(event){
