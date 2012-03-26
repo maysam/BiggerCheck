@@ -73,7 +73,7 @@
 					// mouse.left.down holds a value of true if the left mouse button has been
 					// pressed down since the end of the last loop
 					// The collision.point function determines if a point lies within a mask.
-					if (mouse.left.down && collision.point(t,mouse.x,mouse.y,false)) {
+					if ((mouse.left.down || PP.touch) && collision.point(t,mouse.x,mouse.y,false)) {
 						for(var i in loop.regObjects) 
 						{ 
 							g = loop.regObjects[i];
@@ -147,7 +147,7 @@
 			tick: function(t) {
 				// If the enter key has been released, switch back to the play room
 				
-				if (key.enter.up || mouse.left.up) {
+				if (key.enter.up || mouse.left.up || PP.touch) {
 					loop.room = rm.play;
 				}
 			},

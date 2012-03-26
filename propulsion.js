@@ -510,6 +510,8 @@ var PP = {
 		})(),
 	},
 	
+	touch: false,
+	
 	draw: {
 		get alpha() {
 			return PP.draw.displayCanvas.ctx.globalAlpha;
@@ -779,6 +781,11 @@ var PP = {
 		var offsetLeft = loffset(canvas);
 		var offsetTop = toffset(canvas);
 		
+		window.ontouch = function onTouch(e) {
+			PP.touch = true;
+			window.onmousemove(e);
+		}
+		
 		window.onmousemove = function onMove(e) {
 				
 			var posx = 0;
@@ -851,9 +858,9 @@ var PP = {
 	
 		var touchable = 'createTouch' in document;
 		if(touchable) {
-			canvas.addEventListener( 'touchstart', onMove, false );
-			canvas.addEventListener( 'touchmove', onMove, false );
-			canvas.addEventListener( 'touchend', onMove, false );
+			canvas.addEventListener( 'touchstart', window.ontouch, false );
+			canvas.addEventListener( 'touchmove', window.ontouch, false );
+			canvas.addEventListener( 'touchend', window.ontouch, false );
 		}	
 		
 		// Event handler for mouse wheel event.
@@ -1008,7 +1015,7 @@ var PP = {
 				
 				var errorListener = function() {
 					// Make sure it doesn't fire again...
-					thisAud.removeEventListern('error',errorListener,true);
+					thisAud.removeEventListener('error',errorListener,true);
 					
 					finished();
 				};
@@ -1202,6 +1209,7 @@ var PP = {
 			PP.mouse.right.up = false;
 			PP.mouse.wheel.up = false;
 			PP.mouse.wheel.down = false;
+			PP.touch = false;
 			
 			// Reset the key variables for the next loop
 			var len = PP.key.cache.length;
