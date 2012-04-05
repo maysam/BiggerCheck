@@ -10,6 +10,6 @@ This is using Propulsion engine which is a JavaScript game development framework
 
 
 
-<a href="http://www.haskellers.com/user/1807"><img src="http://www.haskellers.com/static/badge.png" alt="I'm a Haskeller"></a>
+<a target="_blank" href="http://www.haskellers.com/user/1807"><img src="http://www.haskellers.com/static/badge.png" alt="I'm a Haskeller"></a>
 
 
